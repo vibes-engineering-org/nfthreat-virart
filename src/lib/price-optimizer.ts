@@ -526,3 +526,26 @@ export async function fetchPriceData(
     return { mintPrice: BigInt(0), totalCost: BigInt(0) };
   }
 }
+
+/**
+ * Main price optimization function
+ */
+export async function optimizePrice(
+  params: MintParams & { contractInfo: NFTContractInfo }
+): Promise<{
+  mintPrice?: bigint;
+  erc20Details?: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    allowance?: bigint;
+    balance?: bigint;
+  };
+  totalCost: bigint;
+  claim?: NFTContractInfo["claim"];
+}> {
+  const { getPublicClient } = await import("~/lib/chains");
+  const client = getPublicClient(params.chainId);
+
+  return fetchPriceData(client, params, params.contractInfo);
+}
